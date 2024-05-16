@@ -14,10 +14,11 @@ else
     bin=/usr/local/bin
 fi
 
-SD_HOME=${MYHOME}/workspace/shouxiellm/sd
+SD_HOME=${MYHOME}/workspace/shouxiesd
 
 cd ${SD_HOME}
 
+MODEL_REPO=${SD_HOME}/Stable-diffusion
 
 
 ######################start of stable-diffusion-webui-master######################
@@ -72,17 +73,17 @@ file=webui.sh
 cp ${file} ${file}.bk
 $SED -i 's/accelerate launch --num_cpu_threads_per_process=6/accelerate launch --num_cpu_threads_per_process=6 --num_processes 12/g' ${file}
 git config --global http.postBuffer 524288000
-git config --global --add safe.directory /workspace/shouxiellm/sd/stable-diffusion-webui-master/repositories/stable-diffusion-webui-assets
-git config --global --add safe.directory /workspace/shouxiellm/sd/stable-diffusion-webui-master/repositories/stable-diffusion-stability-ai
-git config --global --add safe.directory /workspace/shouxiellm/sd/stable-diffusion-webui-master/repositories/generative-models
-git config --global --add safe.directory /workspace/shouxiellm/sd/stable-diffusion-webui-master/repositories/k-diffusion
-git config --global --add safe.directory /workspace/shouxiellm/sd/stable-diffusion-webui-master/repositories/BLIP
+git config --global --add safe.directory /workspace/shouxiesd/stable-diffusion-webui-master/repositories/stable-diffusion-webui-assets
+git config --global --add safe.directory /workspace/shouxiesd/stable-diffusion-webui-master/repositories/stable-diffusion-stability-ai
+git config --global --add safe.directory /workspace/shouxiesd/stable-diffusion-webui-master/repositories/generative-models
+git config --global --add safe.directory /workspace/shouxiesd/stable-diffusion-webui-master/repositories/k-diffusion
+git config --global --add safe.directory /workspace/shouxiesd/stable-diffusion-webui-master/repositories/BLIP
 while ! ./webui.sh -f; do sleep 2 ; done ; echo succeed
 
 rm -rf models/Stable-diffusion/
 ln -s ${SD_HOME}/Stable-diffusion ${SD_HOME}/stable-diffusion-webui-master/models/Stable-diffusion
 
-python3 launch.py -f --skip-torch-cuda-test --skip-version-check --listen --no-half --precision full
+python3 launch.py -f --skip-torch-cuda-test --skip-version-check --listen --enable-insecure-extension-access --no-half --precision full
 
 git clone https://github.com/VinsonLaro/stable-diffusion-webui-chinese
 cp stable-diffusion-webui-chinese/localizations/chinese-all-0313.json  stable-diffusion-webui-master/localizations/chinese-all.json
@@ -91,6 +92,115 @@ cp stable-diffusion-webui-chinese/localizations/chinese-english-0313.json stable
 pip install alibabacloud_imageseg20191230
 export ALIYUN_ACCESS_KEY_ID=
 export ALIYUN_ACCESS_KEY_SECRET=
+
+
+#huggingface-cli download --resume-download Yntec/AbyssOrangeMix --local-dir ${MODEL_REPO}/Yntec_AbyssOrangeMix
+
+:<<EOF
+#prompt:
+A girl, walking in the forest, th e sun fell on her body,
+white dress,blonde hair,long hair,smiling,streching arms,hands up,beautiful,happy,
+trees,bush,white flower,path,outdoor,
+day,sunlight,blue sky,cloudy sky,
+(masterpiece:1,2),best quality,ultra detailed,masterpiece,highres,8k,original,extremely detailed wallpaper,extremely detailed CG unity 8k wallpaper,perfect lighting,(extremely detailed CG:1.2),drawing,
+painting,illustration,
+anime,comic,game cg,
+photorealistic,realistic,photography,
+looking at viewer,facing the camera,close-up,upper body
+#negative prompt:
+NSFW,(worst quality:2),(low quality:2),(normal quality:2),lowres,normal quality,((monochrome)),((grayscale)),skin spots,acnes,skin blemishes,age spot,(ugly:1.331),(duplicate:1.331),(morbid:1.21),(mutilated:1.21),(tranny:1.331),mutated hands,(poorly drawn hands:1.5),blurry,(bad anatomy:1.21),(bad proportions:1.331),extra limbs,(disfigured:1.331),(missing arms:1.331),(extra legs:1.331),(fused fingers:1.61051),(too many fingers:1.61051),(unclear eyes:1.331),lowers,bad hands,missing fingers,extra digit,bad hands,missing fingers,(((extra arms and legs))),
+
+提示词paitbrush画出了第三只手拿着画笔
+
+step:20不管什么模型，出图都很模糊，step:50质量才能接受
+
+#plugin
+#download models from civitai C站模型下载
+https://github.com/tzwm/sd-webui-model-downloader-cn
+#prompt generation提示词反推
+https://github.com/toriato/stable-diffusion-webui-wd14-tagger
+#Images Browser：图库浏览器
+https://github.com/AlUlkesh/stable-diffusion-webui-images-browser
+#Tagcomplete：提示词自动补全/翻译
+https://github.com/DominikDoom/a1111-sd-webui-tagcomplete
+#model recommendation
+#二次元
+illustration,painting,sketch,drawing,paiting,comic,anime,catoon
+Anything V5(动漫插画角色立绘)
+Counterfeit(室内外场景，精致感溢出屏幕)
+Dreamlike Diffusion（漫画插画风，梦幻，幻想，超现实魔幻主题作品）
+Others:AbyssOrangeMix深渊橘,特立独行的DreamShaper,笔触细腻的Meina Mix和Cetus Mix, 魔幻风味Pastel Mix, 复古油画质感DalcefoPaiting
+#真实系
+photography,photo,realistic,photorealistic,RAW photo
+Deliberate（超级升级版SD官方，非常真实质感，自由度高）
+Relaistic Vision（更朴素踏实，食物，动物照片，假新闻照片）
+L.O.F.I（精致的照片级人像专精模型，面部处理胜过其他，东亚审美也支持）
+#2.5D（三维动画）
+3D,render,chibi,digital art,concept art,{realistic}
+Never Ending Dream (NED)（表现最好，结合lora进行动漫二次创作，真实感恰到好处的满足二次元想象，真实世界里不会产生过分陌生感）
+Protogen x3.4(Photorealism)（更接近真实系模型，贴近真实的魔幻感超现实画面）
+国风3 (Guofeng3)（符合国人审美，结合其他lora能产生水墨风小人书等风格）
+#其他
+富有魔幻感的场景Cheese Daddy's Landscapes mix
+富有现代感的建筑dvArch-Multi-Prompt Architecture Tuned Model
+富有高级感的平面设计Graphic design_2.0
+
+#Prompt:
+1girl, detailed background filled with(many:1.1) (colorful:1.1) (flowers):1.1,(quality:1.1), (photorealistic:1.1),(resolution:1.1), (sharpness:1.1),(cinematic lighting), depth of field, Canan EOS R6, 135mm, 1/1250S, f/2.8, ISO 400
+white cloth with (lace trim:1.3),close-up,portrait,SFW,
+#Negative prompt：
+NG_DeepNegative_Vl_75T, child, lowres, worst quality, low quality, blurry, fake, 3d, anime, bad anatomy, disabled body,disgusting,ugly, text, watermark,
+
+#Prompt:
+SFW,(1girl:1.3),long hair,red hair,face,front,looking at viewer,orange|red dress,upper body,standing,outdoor,Chinese traditional clothes,palace,
+(masterpiece:1,2),best quality,masterpiece,highres,original,extremely detailed wallpaper,perfect lighting,(extremely detailed CG:1.2), drawing, paintbrush,
+#Negative prompt：
+NSFW,(worst quality:2),(low quality:2),(normal quality:2),lowres,normal quality,((monochrome)),((grayscale)),skin spots,acnes,skin blemishes,age spot,(ugly: 1.331),(dupliute:1.331),(mortid:1.21),(mutilated:1.31),(tranny:1.331),mutated hands,(poorly drawn hands:1.5),blurry,(bad anatomy:1.21),(bad proportions:1.331),extra limbs,(disfigured: 1.331),(missing arms: 1.331),(extra legs:1.331),(fused fingers:1.61051),(too many fingers:1,61051),(unclear eyes: 1.331),lowers,bad hands,missing fingers,extra digit,bad hands,missing fingers,(((extra arms and legs))),
+CFG scale=8
+denoising=0.5
+seed=2134139580
+
+#显存消耗(常驻消耗2.3G)
+noscript：8G
+script：3G
+extras: 不消耗显存
+
+
+#安装wd14-tagger
+file=extensions/stable-diffusion-webui-wd14-tagger/tagger/ui.py
+cp ${file} ${file}.bk
+$SED -i 's@from webui import wrap_gradio_gpu_call@#from webui import wrap_gradio_gpu_call@g' ${file}
+$SED -i '/#from webui import wrap_gradio_gpu_call/a\from modules.call_queue import wrap_gradio_gpu_call' ${file}
+
+file=extensions/stable-diffusion-webui-wd14-tagger/preload.py
+cp ${file} ${file}.bk
+$SED -i 's@from modules.shared import models_path@from modules import paths@g' ${file}
+$SED -i "s@default_ddp_path = Path(models_path, 'deepdanbooru')@default_ddp_path = Path(paths.models_path, 'deepdanbooru')@g" ${file}
+
+#tagger插件会启动下载SmilingWolf/wd-v1-4-vit-tagger-v2到hf cache目录，如果下载有问题需要手工修改
+mkdir /workspace/hfcache/hub/models--SmilingWolf--wd-v1-4-vit-tagger-v2
+#手工下载model.onnx，selected_tags.csv
+file=extensions/stable-diffusion-webui-wd14-tagger/tagger/interrogator.py
+把以下内容：
+model_path = Path(hf_hub_download(
+    **self.kwargs, filename=self.model_path))
+tags_path = Path(hf_hub_download(
+    **self.kwargs, filename=self.tags_path))
+修改为：
+model_path = "/.cache/huggingface/hub/models--SmilingWolf--wd-v1-4-vit-tagger-v2/model.onnx"
+tags_path = "/.cache/huggingface/hub/models--SmilingWolf--wd-v1-4-vit-tagger-v2/selected_tags.csv"
+
+#Prompt:
+SFW, masterpiece, best quality, 
+1girl,dynamic pose, city background,
+#add promtps from wdtagger
+#add prompts for charturner(cant' be from wdtagger with a charturnner pic, can't tell the scenerio and purpose)
+A character turnaround of a (corneo_dva) wearing blue mecha bodysuit, (CharTurnerV2:1.2)(multiple views of the same character with the same clothes:1.2), ((character sheet)), (model sheet),((turnaround)),(reference sheet), white background, simple background, character concept, full body,
+
+#Negative prompt：
+NSFW, (worst quality:2), (low quality:2), (normal quality:2), lowres, normal quality, ((monochrome)), ((grayscale)), skin spots, acnes, skin blemishes, age spot, (ugly:1.331), (duplicate:1.331), (morbid:1.21),(mutilated:1.21), (tranny:1.331), mutated hands, (poorly drawn hands:1.5), blurry, (bad anatomy:1.21), (bad proportions:1.331), extra limbs, (disfigured: 1.331), (missing arms:1.331), (extra legs:1.331), (fused fingers:1.61051), (too many fingers:1.61051), (unclear eyes:1.331), lowers, bad hands, missing fingers, extra digit,bad hands, missing fingers, (((extra arms and legs))),
+
+EOF
 ######################end of stable-diffusion-webui-master######################
 
 ######################start of diffusers######################
