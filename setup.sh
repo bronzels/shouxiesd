@@ -149,7 +149,7 @@ Protogen x3.4(Photorealism)（更接近真实系模型，贴近真实的魔幻�
 1girl, detailed background filled with(many:1.1) (colorful:1.1) (flowers):1.1,(quality:1.1), (photorealistic:1.1),(resolution:1.1), (sharpness:1.1),(cinematic lighting), depth of field, Canan EOS R6, 135mm, 1/1250S, f/2.8, ISO 400
 white cloth with (lace trim:1.3),close-up,portrait,SFW,
 #Negative prompt：
-NG_DeepNegative_Vl_75T, child, lowres, worst quality, low quality, blurry, fake, 3d, anime, bad anatomy, disabled body,disgusting,ugly, text, watermark,
+NG_DeepNegative_V1_75T, child, lowres, worst quality, low quality, blurry, fake, 3d, anime, bad anatomy, disabled body,disgusting,ugly, text, watermark,
 
 #Prompt:
 SFW,(1girl:1.3),long hair,red hair,face,front,looking at viewer,orange|red dress,upper body,standing,outdoor,Chinese traditional clothes,palace,
@@ -195,10 +195,78 @@ SFW, masterpiece, best quality,
 1girl,dynamic pose, city background,
 #add promtps from wdtagger
 #add prompts for charturner(cant' be from wdtagger with a charturnner pic, can't tell the scenerio and purpose)
-A character turnaround of a (corneo_dva) wearing blue mecha bodysuit, (CharTurnerV2:1.2)(multiple views of the same character with the same clothes:1.2), ((character sheet)), (model sheet),((turnaround)),(reference sheet), white background, simple background, character concept, full body,
+(easynegative:1.2),A character turnaround of a (corneo_dva) wearing blue mecha bodysuit, (CharTurnerV2:1.2),(multiple views of the same character with the same clothes:1.2), ((character sheet)), (model sheet),((turnaround)),(reference sheet), white background, simple background, character concept, full body,
+
+<lora:dVaOverwatch_v3:0.8>替换(corneo_dva)
+
+DEEVA \(OVERWATCH 1 VERSIONS,D.VA /(OVERWATCH 1/),
+DEEVA \(OVERWATCH 2 VERSIONS\),D.VA /(OVERWATCH 2/),
+DEEVA \(OVERWATCH BLACK CAT VERSIONS\), D.VA/(OVERWATCH BLACK CAT/),
 
 #Negative prompt：
 NSFW, (worst quality:2), (low quality:2), (normal quality:2), lowres, normal quality, ((monochrome)), ((grayscale)), skin spots, acnes, skin blemishes, age spot, (ugly:1.331), (duplicate:1.331), (morbid:1.21),(mutilated:1.21), (tranny:1.331), mutated hands, (poorly drawn hands:1.5), blurry, (bad anatomy:1.21), (bad proportions:1.331), extra limbs, (disfigured: 1.331), (missing arms:1.331), (extra legs:1.331), (fused fingers:1.61051), (too many fingers:1.61051), (unclear eyes:1.331), lowers, bad hands, missing fingers, extra digit,bad hands, missing fingers, (((extra arms and legs))),
+
+#局部重绘，原来text2img 20步生成的人像发到img2img，人睁眼到闭眼，只有20步时，蒙版的区域色调和其他区域不一样，换mask content没用，50步以后没有明显色差
+#如果重绘非mask区域，步数调整到50步还是有色差，调其他的“Only masked padding, pixels”，“CFG Scale”，“Denoising strength”都没用
+#“Mask blur”调到12能看上去自然一些。
+  fill填充，
+  origin原图，
+  latent noise潜变量噪声
+  latent nothing潜变量数值零，
+
+inpaint sketch的调色板，safari没有，edge能调出来。blue设置到5比较合适，太高黑口罩颜色跑到脸上了。
+
+(blue face mask with 1 white heart sign:2)
+直接text2img无法生成，重绘口罩加心形，最好就是多个浅蓝色卫生口罩的。
+image sketch心形有时容易生成，有时怎样也调不出来。最后一次调出来：
+  cfg scale: 8
+  denoising strength: 0.4
+  prompt height:1.8
+发现咯吱窝很难看inpaint/inpaint sketch都很难美化，加了提示词有反效果，咯吱窝奇怪的东西更多了。
+
+paint upload
+狗坐凳子换成老虎坐凳子，
+1，先把狗坐凳子的tag提取出来。
+2，调节参数
+  cfg scale: 14
+  denoising strength: 0.5
+  prompt height:1.2
+3，老虎的眼睛很模糊，把Masked content从original改成fill以后，老虎变成背对镜头，最前面加上front的提示词。
+
+给tag_complete增加中文和翻译词库文件，并不能把中文提示词翻译过来
+换成用另一个插件all-inone翻译插件，补全又不工作了。
+
+cutoff不起作用，删除掉dva的lora <>和专用提示词也没法出现黄色头盔和红色手套，还不如在提示词里多加权重。
+
+lucy_cyberpunk这个LORA，和网站说的底模1.5搭配，出来的图像鬼一样丑，和深渊橘就很符合。
+
+Fashion Girl，时尚女性
+Cute Girl，mix4,
+Asian Male
+吉卜力，ghibli style, howl \(howl no ugoku shiro\)
+princess zelda，princess zelda
+gacha splash style(dont use SDE), [(white background:1.5)::5], isometric OR hexagon, 1girl, midshot, full body, hires fix + SD upscale, MultiDiffusion
+  magician,blue long dress,jewelry,holding a wand,
+  ocean,sea waves,water splashes,sky,light particles,VFX,night,starry sky,galaxy,magic power,water drop
+anime tarot card art style
+zyd232's statis pod/chamber
+mugshot
+lottalewds' thisisfine
+Mecha, 
+  best quality ,masterpiece, illustration, an extremely delicate and beautiful, extremely detailed ,CG ,unity ,8k wallpaper, Amazing, finely detail, masterpiece,best quality,official art,extremely detailed CG unity 8k wallpaper,absurdres, incredibly absurdres, ultra-detailed, highres, extremely detailed,beautiful detailed girl,light on face,
+  mecha, armor, mechanical_body, spaceship, city, cyberpunk, star_sky
+  cyberpunk,futuristic,intricate mechanical bodysuit, mecha corset,mechanical parts,robostic arms and legs,headgear,caustics,reflection,ray tracing,demontheme,cyber effect,science fiction
+
+
+
+  a futuristic looking cyborg girl with a black cyberhelmet head with red triangle led lights and a halo
+
+给mecha girl换一个cyber helmet头盔总是一团亮没有细节。只保留头盔提示词，只重绘头部，稍微好点，但还是太亮。  
+
+cd extensions
+git clone https://github.com/Mikubill/sd-webui-controlnet.git
+#把hf-mirror搜索lllyasviel/ControlNet-v1-1下载的yaml和pth文件，放到extensions/sd-webui-controlnet/models文件夹里
+
 
 EOF
 ######################end of stable-diffusion-webui-master######################
@@ -400,8 +468,69 @@ tensorboard --logdir=${OUTPUT_DIR} --port=6009 --host=0.0.0.0
 conda create -n comfyui python=3.10 -y
 conda activate comfyui
 
+while ! git clone https://github.com/comfyanonymous/ComfyUI_examples.git; do sleep 2 ; done ; echo succeed
 while ! git clone https://github.com/comfyanonymous/ComfyUI.git; do sleep 2 ; done ; echo succeed
 cd ComfyUI
 pip install -r requirements.txt
+
+cp extra_model_paths.yaml.example extra_model_paths.yaml
+$SED -i 's@    base_path: path/to/stable-diffusion-webui/@    base_path: /workspace/shouxiesd/stable-diffusion-webui-master/@g' extra_model_paths.yaml
+$SED -i 's@    controlnet: models/ControlNet@    controlnet: /workspace/shouxiesd/stable-diffusion-webui-master/extensions/sd-webui-controlnet/models@g' extra_model_paths.yaml
+
+python main.py --listen 192.168.3.14
+
+prompt: 
+1girl, school uniform, purple theme, galaxy, universe, cinematic lighting, perfect lights, vara lights, masterpiece, best quality,
+negative prompt:
+nsfw, (low quality, worst quality:1.5),lowres, bad anatony, bad hands, text, error, missing fingers, extra digit, fewer digits, 
+cropped, worst quality, low quality, normal quality, jpeg artifacts signature, watermark, usernane, blurry
+
+cd custom_nodes
+git clone https://github.com/ltdrdata/ComfyUI-Manager
+git clone https://github.com/11cafe/comfyui-workspace-manager
+git clone git@github.com:atmaranto/ComfyUI-SaveAsScript
+git clone git@github.com:pythongosssss/ComfyUI-WD14-Tagger
+pip install onnxruntime
+git clone https://github.com/AIrjen/OneButtonPrompt
+git clone git@github.com:ltdrdata/ComfyUI-Inspire-Pack.git
+git clone git@github.com:jags111/efficiency-nodes-comfyui.git
+pip install simpleeval
+git clone git@github.com:Suzie1/ComfyUI_Comfyroll_CustomNodes.git
+pip install numba
+git clone git@github.com:WASasquatch/was-node-suite-comfyui.git
+git clone git@github.com:rgthree/rgthree-comfy.git
+git clone git@github.com:Kosinkadink/ComfyUI-AnimateDiff-Evolved.git
+git clone git@github.com:cubiq/ComfyUI_IPAdapter_plus.git
+git clone https://github.com/Gourieff/comfyui-reactor-node
+git clone git@github.com:ssitu/ComfyUI_UltimateSDUpscale --recursive
+pip install -r requirements.txt
+git clone https://github.com/Fannovel16/comfyui_controlnet_aux.git
+pip install -r requirements.txt
+git clone https://github.com/BadCafeCode/masquerade-nodes-comfyui
+
+界面restart不行，需要手工重启main.py，语言和提示词补全插件设置菜单才会出现。
+AIGODLIKE-COMFYUI-TRANSLATION 
+ComfyUI-Manager
+ComfyUI_Custom_Nodes_AlekPet
+ComfyUI-SaveAsScript
+ComfyUI-Custom-Scripts
+comfyui-workspace-manager
+ComfyUI-WD14-Tagger
+OneButtonPrompt
+ComfyUI-Inspire-Pack
+efficiency-nodes-comfyui
+ComfyUI_Comfyroll_CustomNodes
+was-node-suite-comfyui
+rgthree-comfy
+ComfyUI-AnimateDiff-Evolved
+ComfyUI_IPAdapter_plus
+comfyui-reactor-node
+ComfyUI_UltimateSDUpscale
+masquerade-nodes-comfyui
+
+git clone https://github.com/ltdrdata/ComfyUI-Impact-Pack.git
+cd ComfyUI-Impact-Pack
+git clone https://github.com/ltdrdata/ComfyUI-Impact-Subpack impact_subpack
+python install.py
 
 ######################end of ComfyUI######################

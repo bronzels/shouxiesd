@@ -1,0 +1,43 @@
+扩展查阅地址：
+https://raw.githubusercontent.com/AUTOMATIC1111/stable-diffusion-webui-extensions/master/index.json
+备用镜像地址：
+https://gitee.com/akegarasu/sd-webui-extensions/raw/master/index.json
+https://gitgud.io/AUTOMATIC1111/stable-diffusion-webui/-/wikis/Extensions-index.md​
+
+————————————————————
+
+1. 中文语言包
+    搜索：zh（取消勾选本地化/Localization的筛选）
+    仓库地址：https://github.com/hanamizuki-ai/stable-diffusion-webui-localization-zh_Hans.git
+
+2. 图库浏览器
+    搜索：image browser
+    仓库地址：https://github.com/AlUlkesh/stable-diffusion-webui-images-browser
+
+3. 提示词补全
+    搜索：tag complete
+    仓库地址：https://github.com/DominikDoom/a1111-sd-webui-tagcomplete
+    中文词库见网盘
+
+4. 提示词反推
+    搜索：tagger
+    仓库地址：https://github.com/toriato/stable-diffusion-webui-wd14-tagger.git
+
+5. Ultimate Upscale脚本
+    搜索：ultimate upscale
+    仓库地址：https://github.com/Coyote-A/ultimate-upscale-for-automatic1111.git
+
+6. Local Latent Couple
+    搜索：llul
+    仓库地址：https://github.com/hnmr293/sd-webui-llul.git
+
+7. Cutoff
+    搜索：cut off
+    仓库地址：https://github.com/hnmr293/sd-webui-cutoff.git
+
+8. Infinite Zoom
+    搜索：Infinite Zoom
+    仓库地址：https://github.com/v8hid/infinite-zoom-automatic1111-webui.git
+
+
+@Nenly
