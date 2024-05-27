@@ -71,6 +71,7 @@ the following values were not passed to `accelerate launch` and had defaults use
 EOF
 file=webui.sh
 cp ${file} ${file}.bk
+#增加set -e，循环安装避免git clone出错
 $SED -i 's/accelerate launch --num_cpu_threads_per_process=6/accelerate launch --num_cpu_threads_per_process=6 --num_processes 12/g' ${file}
 git config --global http.postBuffer 524288000
 git config --global --add safe.directory /workspace/shouxiesd/stable-diffusion-webui-master/repositories/stable-diffusion-webui-assets
@@ -266,7 +267,14 @@ Mecha,
 cd extensions
 git clone https://github.com/Mikubill/sd-webui-controlnet.git
 #把hf-mirror搜索lllyasviel/ControlNet-v1-1下载的yaml和pth文件，放到extensions/sd-webui-controlnet/models文件夹里
+file=extensions/sd-webui-controlnet/scripts/api.py
+cp ${file} ${file}.bk
+$SED -i 's@from typing import Union@from typing import Union, List@g' ${file}
 
+prompt:
+(sfw:1.2),absurdres,1girl,ocean,white dress,long sleeves,sunhat,smile,
+negative prompt:
+nsfw,(worst quality:1.2),(low quality:1.2),(lowres:1.1),(monochrome:1.1),(greyscale),multiple views,comic,sketch,animal ears,pointy ears,blurry,transparent,see-through
 
 EOF
 ######################end of stable-diffusion-webui-master######################
@@ -534,3 +542,49 @@ git clone https://github.com/ltdrdata/ComfyUI-Impact-Subpack impact_subpack
 python install.py
 
 ######################end of ComfyUI######################
+
+######################start of stable-diffusion-webui-forge######################
+conda create -n sd-webui-forge python=3.10 -y
+conda activate sd-webui-forge
+
+cd stable-diffusion-webui-forge
+
+pip install deepspeed
+#cp -r ../stable-diffusion-webui-master/repositories/generative-models repositories/
+#mkdir stable-diffusion-webui-forge
+#rsync -a --exclude=outputs --exclude=models --exclude=extensions --exclude=embeddings stable-diffusion-webui-master/ stable-diffusion-webui-forge/
+git clone https://github.com/lllyasviel/stable-diffusion-webui-forge.git -o stable-diffusion-webui-forge
+git config --global --add safe.directory /workspace/shouxiellm/sd/stable-diffusion-webui-forge
+pip install -r requirements_versions.txt
+#git clone https://github.com/Stability-AI/generative-models -o repositories/generative-models
+file=webui.sh
+cp ${file} ${file}.bk
+#增加set -e，循环安装避免git clone出错
+file=webui-user.sh
+cp ${file} ${file}.bk
+\cp ../webui-user.sh ./
+$SED -i 's@stable-diffusion-webui-master@stable-diffusion-webui-forge@g' ${file}
+while ! bash webui.sh -f; do sleep 2 ; done ; echo succeed
+
+ln -s /workspace/shouxiesd/stable-diffusion-webui-master/embeddings /workspace/shouxiesd/stable-diffusion-webui-forge/embeddings
+ln -s /workspace/shouxiesd/stable-diffusion-webui-master/extensions /workspace/shouxiesd/stable-diffusion-webui-forge/extensions
+mv models models.bk
+ln -s /workspace/shouxiesd/stable-diffusion-webui-master/models /workspace/shouxiesd/stable-diffusion-webui-forge/models
+ln -s /workspace/shouxiesd/stable-diffusion-webui-master/outputs /workspace/shouxiesd/stable-diffusion-webui-forge/outputs
+
+python3 launch.py -f --skip-torch-cuda-test --skip-version-check --listen --enable-insecure-extension-access
+# --no-half --precision full
+
+:<<EOF
+git remote -v 
+git remote add forge https://github.com/lllyasviel/stable-diffusion-webui-forge
+git branch lllyasviel/main
+git checkout lllyasviel/main
+while ! git fetch forge; do sleep 2 ; done ; echo succeed
+git branch -u forge/main
+export LD_PRELOAD=/lib64/libtcmalloc.so.4
+while ! git pull; do sleep 2 ; done ; echo succeed
+unset LD_PRELOAD
+EOF
+
+######################end of stable-diffusion-webui-forge######################
