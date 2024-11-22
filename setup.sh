@@ -583,7 +583,7 @@ conda create -n sd-ft python=3.10 -y
 conda activate sd-ft
 
 git clone https://github.com/huggingface/diffusers.git
-cd diffusers/examples
+cd diffusers
 pip install -e .
 cd examples
 export LD_PRELOAD=/lib64/libtcmalloc.so.4
@@ -744,6 +744,10 @@ accelerate launch controlnet/train_controlnet.py \
  --gradient_checkpointing \
  --use_8bit_adam \
  --set_grads_to_none
+
+ #https://blog.csdn.net/m0_46864820/article/details/137234801
+ git clone git@github.com:lllyasviel/ControlNet orig-ControlNet
+ ControlNet
 ######################end of sd-controlnet######################
 
 ######################start of sd-textual_inversion######################
@@ -848,7 +852,7 @@ sdxl_prompt_styler
 git clone https://github.com/ltdrdata/ComfyUI-Impact-Pack.git
 cd ComfyUI-Impact-Pack
 git clone https://github.com/ltdrdata/ComfyUI-Impact-Subpack impact_subpack
-python install.py
+#python install.py
 
 
 A hyper-realistic portrait of a 20 yo girl standing in a wheat field
@@ -871,6 +875,37 @@ ln -s /workspace/shouxiesd/animatediff_lora /workspace/shouxiesd/ComfyUI/custom_
 git clone git@github.com:0xbitches/ComfyUI-LCM
 
 git clone git@github.com:TheMistoAI/ComfyUI-Anyline.git
+
+git clone git@github.com:Kosinkadink/ComfyUI-Advanced-ControlNet
+
+HF_MODEL_NAME = "lllyasviel/Annotators",
+DWPOSE_MODEL_NAME = "yzd-v/DWPose",
+BDS_MODEL_NAME = "bdsqlsz/qinglong_controlnet-lllite",
+DENSEPOSE_MODEL_NAME = "LayerNorm/DensePose-TorchScript-with-hint-image",
+MESH_GRAPHORMER_MODEL_NAME = "hr16/ControlNet-HandRefiner-pruned",
+SAM_MODEL_NAME = "dhkim2810/MobileSAM",
+UNIMATCH_MODEL_NAME = "hr16/Unimatch",
+DEPTH_ANYTHING_MODEL_NAME = "LiheYoung/Depth-Anything", #HF Space
+DIFFUSION_EDGE_MODEL_NAME = "hr16/Diffusion-Edge"
+
+/usr/bin/ffmpeg -v error -n -i /workspace/shouxiesd/ComfyUI/output/AnimateDiff_00001.mp4 -ar 44100 -ac 2 -f f32le -i - -c:v copy -c:a aac -af apad=whole_dur=36.6875 -shortest /workspace/shouxiesd/ComfyUI/output/AnimateDiff_00001-audio.mp4
+
+git clone git@github.com:Fannovel16/ComfyUI-Frame-Interpolation
+
+git clone git@github.com:tinyterra/ComfyUI_tinyterraNodes
+
+1girl, beautiful, Southeast Asian face and skin, sitting by a desk, looking at viewer,facing the camera,close-up,upper body, talking to viewer,
+masterpiece,best quality,cinematic lighting,HDR,UHD,8K,
+
+embedding:bad_prompt_version2-neg, embedding:easynegative, embedding:negative_hand-neg, embedding:ng_deepnegative_v1_75t, 
+
+masterpiece,best quality,cinematic lighting,HDR,UHD,8K,
+
+git clone git@github.com:kijai/ComfyUI-KJNodes.git
+git clone git@github.com:djbielejeski/a-person-mask-generator
+
+pip install rembg
+pip install insightface
 
 ######################end of ComfyUI######################
 
